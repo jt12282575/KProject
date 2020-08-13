@@ -11,6 +11,7 @@ import dada.com.kproject.const.ApiConst.Companion.SONG_LIST
 import dada.com.kproject.const.ApiConst.Companion.SONG_LIST_PAGE
 import dada.com.kproject.data.KKBOXRepository
 import dada.com.kproject.local.SharedPreferencesProvider
+import dada.com.kproject.model.Category
 import dada.com.kproject.ui.BaseViewModel
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.wrapper.ApiWrapper
@@ -25,6 +26,7 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
     private val apiQueue:Queue<ApiWrapper> = LinkedList()
     private val mutex = Mutex()
     private val _needFetchToken = MutableLiveData<Boolean>()
+
 
 
     private fun isFetchRemoteTokenIdle() = !mutex.isLocked
