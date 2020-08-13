@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KProject</string>
+    <string name="api_error">發生了一些問題，請稍後重新嘗試。</string>
 </resources>

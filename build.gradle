@@ -34,4 +34,5 @@ ext{
     lifecycleVersion = '2.2.0'
     recyclerViewVersion = '1.2.0-alpha03'
     coreVersion = '1.3.0'
+    okhttpLoggingInterceptorVersion = '4.0.0'
 }
