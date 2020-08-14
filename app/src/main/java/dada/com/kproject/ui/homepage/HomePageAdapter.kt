@@ -11,17 +11,17 @@ import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_HEADER
 import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_ITEM
 import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_HEADER_SIZE
 import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE
-import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_SONG_LIST_HEADER_SIZE
-import dada.com.kproject.const.ViewStateConst.Companion.SONG_LIST_HEADER
-import dada.com.kproject.const.ViewStateConst.Companion.SONG_LIST_ITEM
+import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_PLAY_LIST_HEADER_SIZE
+import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_HEADER
+import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_ITEM
 import dada.com.kproject.model.Category
-import dada.com.kproject.model.SongList
+import dada.com.kproject.model.PlayList
 
 class HomePageAdapter(
     private val context: Context,
     private val categories:List<Category>,
     private val onCategoryClick:(category:Category)->Unit
-): PagingDataAdapter<SongList, RecyclerView.ViewHolder>(SONG_LIST_COMPARATOR) {
+): PagingDataAdapter<PlayList, RecyclerView.ViewHolder>(PLAY_LIST_COMPARATOR) {
 
 
     override fun getItemCount(): Int {
@@ -29,10 +29,10 @@ class HomePageAdapter(
             super.getItemCount() +
                     HOMEPAGE_CATEGORY_HEADER_SIZE +
                     HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
-                    HOMEPAGE_SONG_LIST_HEADER_SIZE
+                    HOMEPAGE_PLAY_LIST_HEADER_SIZE
         }else{
             super.getItemCount() +
-                    HOMEPAGE_SONG_LIST_HEADER_SIZE
+                    HOMEPAGE_PLAY_LIST_HEADER_SIZE
         }
     }
 
@@ -44,11 +44,11 @@ class HomePageAdapter(
             isCategoryItem(position) -> {
                 CATEGORY_LIST_ITEM
             }
-            isSongListHeader(position) -> {
-                SONG_LIST_HEADER
+            isPlayListHeader(position) -> {
+                PLAY_LIST_HEADER
             }
             else -> {
-                SONG_LIST_ITEM
+                PLAY_LIST_ITEM
             }
         }
 
@@ -59,14 +59,14 @@ class HomePageAdapter(
         if(holder is HeaderViewHolder){
             if (isCategoryHeader(position)){
                 holder.bind(context.getString(R.string.category_header))
-            }else if(isSongListHeader(position)){
-                holder.bind(context.getString(R.string.song_list_header))
+            }else if(isPlayListHeader(position)){
+                holder.bind(context.getString(R.string.play_list_header))
             }
         }else if(holder is CategoryListViewHolder){
             holder.bind(categories,onCategoryClick)
-        }else if(holder is SongListViewHolder){
-            val songList =getItem(mapSongListPosition(position))
-            songList?.let {
+        }else if(holder is PlayListViewHolder){
+            val playList =getItem(mapPlayListPosition(position))
+            playList?.let {
                 holder.bind(it)
             }
         } else{
@@ -74,16 +74,16 @@ class HomePageAdapter(
         }
     }
 
-    private fun mapSongListPosition(position:Int):Int{
+    private fun mapPlayListPosition(position:Int):Int{
         return if (categories.isNotEmpty()){
             position - (
                     HOMEPAGE_CATEGORY_HEADER_SIZE +
                             HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
-                            HOMEPAGE_SONG_LIST_HEADER_SIZE
+                            HOMEPAGE_PLAY_LIST_HEADER_SIZE
                     )
         }else{
             position - (
-                            HOMEPAGE_SONG_LIST_HEADER_SIZE
+                            HOMEPAGE_PLAY_LIST_HEADER_SIZE
                     )
         }
     }
@@ -96,7 +96,7 @@ class HomePageAdapter(
         return (position == 1 && categories.isNotEmpty())
     }
 
-    private fun isSongListHeader(position:Int):Boolean{
+    private fun isPlayListHeader(position:Int):Boolean{
         return (position == 2 && categories.isNotEmpty()) || (position == 0 && categories.isEmpty())
     }
 
@@ -116,7 +116,7 @@ class HomePageAdapter(
                     )
                 )
             }
-            SONG_LIST_HEADER ->{
+            PLAY_LIST_HEADER ->{
                 HeaderViewHolder(
                     LayoutInflater.from(context).inflate(
                         R.layout.item_header, parent, false
@@ -124,9 +124,9 @@ class HomePageAdapter(
                 )
             }
             else->{
-                SongListViewHolder(
+                PlayListViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_song_list, parent, false
+                        R.layout.item_play_list, parent, false
                     )
                 )
             }
@@ -134,12 +134,12 @@ class HomePageAdapter(
     }
 
     companion object {
-        private val SONG_LIST_COMPARATOR = object : DiffUtil.ItemCallback<SongList>() {
-            override fun areItemsTheSame(oldItem: SongList, newItem: SongList): Boolean {
+        private val PLAY_LIST_COMPARATOR = object : DiffUtil.ItemCallback<PlayList>() {
+            override fun areItemsTheSame(oldItem: PlayList, newItem: PlayList): Boolean {
                 return (oldItem.id == newItem.id)
             }
 
-            override fun areContentsTheSame(oldItem: SongList, newItem: SongList): Boolean =
+            override fun areContentsTheSame(oldItem: PlayList, newItem: PlayList): Boolean =
                 ( (oldItem.id == newItem.id) && (oldItem.updatedAt == newItem.updatedAt))
         }
     }

@@ -14,14 +14,13 @@ class ApiConst {
         const val CATEGORY_COMPLEX = "KrdH2LdyUKS8z2aoxX"
 
         const val INITIAL_CATEGORY = 15
-        const val SONG_LIST_PAGE = 10
+        const val PLAY_LIST_PER_PAGE = 10
 
         //Api type
         const val NEW_RELEASE_CATEGORIES = 0
-        const val SONG_LIST = 1
+        const val PLAY_LIST = 1
 
         //Paging
-        const val PAGING_INITIAL_PAGE_SIZE = 10
         const val PAGING_PAGE_SIZE = 5
         const val PAGING_INITIAL_OFFSET = 0
 

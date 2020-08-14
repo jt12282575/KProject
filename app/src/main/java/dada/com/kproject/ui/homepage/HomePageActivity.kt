@@ -10,14 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dada.com.kproject.R
-import dada.com.kproject.const.ApiConst
-import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_HEADER_INDEX
-import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_ITEM_INDEX
-import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_HEADER_SIZE
-import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE
 import dada.com.kproject.model.Category
 import dada.com.kproject.util.logi
-import dada.com.kproject.util.wrapper.ApiWrapper
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -41,10 +35,10 @@ class HomePageActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(applicationContext)
 
             adapter = homePageAdapter.withLoadStateHeaderAndFooter(
-                header = SongListStateAdapter{
+                header = PlayListStateAdapter{
                     homePageAdapter.retry()
                 },
-                footer = SongListStateAdapter{
+                footer = PlayListStateAdapter{
                     homePageAdapter.retry()
                 }
             )
@@ -87,9 +81,9 @@ class HomePageActivity : AppCompatActivity() {
         })
 
 
-        model.songList.observe(this,
+        model.playList.observe(this,
             Observer{
-                logi("song list size : ${it.data?.body()?.data?.size}")
+                logi("play list size : ${it.data?.body()?.data?.size}")
                 if(it?.message != null){
                     logi("error : ${it?.message}")
                 }
@@ -100,13 +94,13 @@ class HomePageActivity : AppCompatActivity() {
             logi("finish fetch")
         })
 
-        loadSongList()
+        loadPlayList()
 
     }
 
-    private fun loadSongList(){
+    private fun loadPlayList(){
         lifecycleScope.launch {
-            model.loadSongList().collectLatest{
+            model.loadPlayList().collectLatest{
                 homePageAdapter.submitData(it)
             }
         }

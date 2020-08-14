@@ -11,8 +11,8 @@ import dada.com.kproject.const.ApiConst.Companion.CATEGORY_COMPLEX
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.local.SharedPreferencesProvider
 import dada.com.kproject.model.CategoryResponse
-import dada.com.kproject.model.SongList
-import dada.com.kproject.model.SongListResponse
+import dada.com.kproject.model.PlayList
+import dada.com.kproject.model.PlayListResponse
 import dada.com.kproject.model.TokenResponse
 import dada.com.kproject.util.logi
 import kotlinx.coroutines.flow.Flow
@@ -32,8 +32,8 @@ class KKBOXRepository(private val service: KKBOXService,
         )
     }
 
-   suspend fun fetchSongList(limit: Int,offset:Int,token:String):Response<SongListResponse>{
-       return service.fetchSongList(
+   suspend fun fetchPlayList(limit: Int, offset:Int, token:String):Response<PlayListResponse>{
+       return service.fetchPlayList(
            token = token,
            limit = limit,
            offset = offset
@@ -57,7 +57,7 @@ class KKBOXRepository(private val service: KKBOXService,
 
     fun saveToken(token:String) = sharedPreferencesProvider.saveToken(token)
 
-    fun fetchSongListStream(token:String): Flow<PagingData<SongList>> {
+    fun fetchPlayListStream(token:String): Flow<PagingData<PlayList>> {
         return Pager(
             config = PagingConfig(
                 pageSize = ApiConst.PAGING_PAGE_SIZE,

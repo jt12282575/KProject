@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <ImageView
-        android:id="@+id/isl_iv_image"
+        android:id="@+id/ipl_iv_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="16dp"
@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         />
     <TextView
-        android:id="@+id/isl_tv_song_list_name"
+        android:id="@+id/ipl_tv_play_list_name"
         android:textSize="18dp"
         android:textColor="@android:color/black"
         android:maxLines="2"
@@ -25,22 +25,22 @@
         android:layout_marginRight="16dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/isl_iv_image"
+        app:layout_constraintLeft_toRightOf="@id/ipl_iv_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/isl_tv_song_list_owner_and_date"
+        app:layout_constraintBottom_toTopOf="@id/ipl_tv_play_list_owner_and_date"
         tools:text="歌單名稱"
         />
     <TextView
-        android:id="@+id/isl_tv_song_list_owner_and_date"
+        android:id="@+id/ipl_tv_play_list_owner_and_date"
         android:textSize="14dp"
         android:textColor="@android:color/black"
         android:maxLines="2"
         android:layout_marginLeft="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/isl_iv_image"
-        app:layout_constraintTop_toBottomOf="@id/isl_tv_song_list_name"
+        app:layout_constraintLeft_toRightOf="@id/ipl_iv_image"
+        app:layout_constraintTop_toBottomOf="@id/ipl_tv_play_list_name"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Dada@2020/11/10"
         />

@@ -2,7 +2,7 @@ package dada.com.kproject.model
 
 import com.google.gson.annotations.SerializedName
 
-data class SongList(
+data class PlayList(
     val id:String,
     val url:String,
     val images:List<Image>,

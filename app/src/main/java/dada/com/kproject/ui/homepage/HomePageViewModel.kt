@@ -1,8 +1,6 @@
 package dada.com.kproject.ui.homepage
 
 import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dada.com.kproject.Global
@@ -11,14 +9,11 @@ import dada.com.kproject.api.getKKBOXService
 import dada.com.kproject.api.getKKBOXTokenService
 import dada.com.kproject.const.ApiConst.Companion.INITIAL_CATEGORY
 import dada.com.kproject.const.ApiConst.Companion.NEW_RELEASE_CATEGORIES
-import dada.com.kproject.const.ApiConst.Companion.PAGING_PAGE_SIZE
-import dada.com.kproject.const.ApiConst.Companion.SONG_LIST
-import dada.com.kproject.const.ApiConst.Companion.SONG_LIST_PAGE
-import dada.com.kproject.data.KKBOXPagingSource
+import dada.com.kproject.const.ApiConst.Companion.PLAY_LIST
+import dada.com.kproject.const.ApiConst.Companion.PLAY_LIST_PER_PAGE
 import dada.com.kproject.data.KKBOXRepository
 import dada.com.kproject.local.SharedPreferencesProvider
-import dada.com.kproject.model.Category
-import dada.com.kproject.model.SongList
+import dada.com.kproject.model.PlayList
 import dada.com.kproject.ui.BaseViewModel
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.wrapper.ApiWrapper
@@ -56,15 +51,15 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
         )
     }
 
-    private val _fetchSongList = MutableLiveData<ApiWrapper>().also {
+    private val _fetchPlayList = MutableLiveData<ApiWrapper>().also {
         it.value = ApiWrapper(
-            apiType = SONG_LIST,
+            apiType = PLAY_LIST,
             offset = 0,
-            limit = SONG_LIST_PAGE
+            limit = PLAY_LIST_PER_PAGE
         )
     }
-    private val fetchSongList: LiveData<ApiWrapper>
-        get() = _fetchSongList
+    private val fetchPlayList: LiveData<ApiWrapper>
+        get() = _fetchPlayList
 
     private var token: String = (repo.fetchLocalToken() ?: "").also {
         logi("local token : $it")
@@ -74,9 +69,9 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
         }
     }
 
-    val songList = Transformations.switchMap(_fetchSongList) {
+    val playList = Transformations.switchMap(_fetchPlayList) {
         launchDataLoad {
-            repo.fetchSongList(
+            repo.fetchPlayList(
                 token = token,
                 offset = it.offset,
                 limit = it.limit
@@ -161,15 +156,15 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
     }
 
 
-    private var currentSearchResult: Flow<PagingData<SongList>>? = null
+    private var currentSearchResult: Flow<PagingData<PlayList>>? = null
 
-    fun loadSongList(): Flow<PagingData<SongList>> {
+    fun loadPlayList(): Flow<PagingData<PlayList>> {
         val lastResult = currentSearchResult
         if (lastResult != null){
             return lastResult
         }
 
-        val newResult: Flow<PagingData<SongList>> = repo.fetchSongListStream(token)
+        val newResult: Flow<PagingData<PlayList>> = repo.fetchPlayListStream(token)
             .cachedIn(viewModelScope)
         currentSearchResult = newResult
         return newResult

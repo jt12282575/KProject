@@ -6,7 +6,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_load_state_footer.view.*
 
-class SongListStateViewHolder(retry:(()->Unit),itemView: View): RecyclerView.ViewHolder(itemView) {
+class PlayListStateViewHolder(retry:(()->Unit), itemView: View): RecyclerView.ViewHolder(itemView) {
 
     init {
         itemView.ilsf_retry_button.setOnClickListener {

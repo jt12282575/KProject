@@ -1,12 +1,8 @@
 package dada.com.kproject.api
 
-import androidx.lifecycle.LiveData
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.model.CategoryResponse
-import dada.com.kproject.model.SongListResponse
-import dada.com.kproject.util.logi
+import dada.com.kproject.model.PlayListResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -47,10 +43,10 @@ interface KKBOXService {
     ):Response<CategoryResponse>
 
     @GET("featured-playlists")
-    suspend fun fetchSongList(
+    suspend fun fetchPlayList(
         @Header("Authorization") token: String,
         @Query("territory") territory:String = TerritoryEnum.TAIWAN.countryCode,
         @Query("offset") offset:Int = 0,
         @Query("limit") limit:Int = 15
-    ):Response<SongListResponse>
+    ):Response<PlayListResponse>
 }
