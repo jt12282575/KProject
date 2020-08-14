@@ -28,7 +28,7 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
 
     private val apiQueue: Queue<ApiWrapper> = LinkedList()
     private val mutex = Mutex()
-    private val _needFetchToken = MutableLiveData<Boolean>()
+
 
 
     private fun isFetchRemoteTokenIdle() = !mutex.isLocked
@@ -68,6 +68,7 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
             _needFetchToken.value = true
         }
     }
+
 
     val playList = Transformations.switchMap(_fetchPlayList) {
         launchDataLoad {
@@ -136,6 +137,8 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
                 token = "${it.data.tokenType} ${it.data.accessToken}"
                 logi("token: $token")
                 repo.saveToken(token)
+                _tokenRefreshed.postValue(true)
+
                 while (apiQueue.isNotEmpty()) {
                     val apiWrapper = apiQueue.poll()
                     logi("type: ${apiWrapper.apiType}")

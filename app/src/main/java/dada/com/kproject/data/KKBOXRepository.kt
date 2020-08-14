@@ -22,6 +22,8 @@ class KKBOXRepository(private val service: KKBOXService,
                       private val tokenService: KKBOXTokenService,
                       private val sharedPreferencesProvider: SharedPreferencesProvider
 ) {
+
+
     suspend fun fetchNewReleaseCategories(limit: Int,token:String): Response<CategoryResponse> {
         return service.fetchTenNewReleaseCategories(
             token = token,
@@ -52,17 +54,24 @@ class KKBOXRepository(private val service: KKBOXService,
         val tokenStr =  sharedPreferencesProvider.getToken()
         logi("fetch from local $tokenStr")
 
-        return tokenStr
+        return ""
     }
 
-    fun saveToken(token:String) = sharedPreferencesProvider.saveToken(token)
+    private var pagingSource:KKBOXPagingSource? = null
+
+    fun saveToken(token:String){
+        sharedPreferencesProvider.saveToken(token)
+        pagingSource?.setToken(token)
+    }
 
     fun fetchPlayListStream(token:String): Flow<PagingData<PlayList>> {
+        pagingSource = KKBOXPagingSource(service,token)
+
         return Pager(
             config = PagingConfig(
                 pageSize = ApiConst.PAGING_PAGE_SIZE,
                 enablePlaceholders = false),
-            pagingSourceFactory ={KKBOXPagingSource(service,token)}
+            pagingSourceFactory ={pagingSource!!}
         ).flow
     }
 

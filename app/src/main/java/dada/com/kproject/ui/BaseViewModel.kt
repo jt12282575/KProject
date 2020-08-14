@@ -11,6 +11,13 @@ import kotlinx.coroutines.Dispatchers
 
 open class BaseViewModel:ViewModel() {
     protected val _spinner = MutableLiveData<Boolean>()
+
+    protected val _needFetchToken = MutableLiveData<Boolean>()
+
+    fun refreshToken(){
+        _needFetchToken.value = true
+    }
+
     val spinner: LiveData<Boolean>
         get() = _spinner
 
@@ -26,5 +33,8 @@ open class BaseViewModel:ViewModel() {
                 _spinner.postValue(false)
             }
         }
+
+    protected val _tokenRefreshed = MutableLiveData<Boolean>()
+    fun tokenRefreshed():LiveData<Boolean> = _tokenRefreshed
 
 }

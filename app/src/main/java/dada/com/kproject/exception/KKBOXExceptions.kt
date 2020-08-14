@@ -4,7 +4,7 @@ import dada.com.kproject.Global
 import dada.com.kproject.R
 import java.lang.Exception
 
-class KKBOXAuthException: Exception(){
+class KKBOXAuthException(private val refreshMessage:String): Exception(){
     override val message: String?
-        get() = Global.getContext().getString(R.string.auth_exception)
+        get() = refreshMessage
 }
