@@ -27,7 +27,7 @@ class KKBOXPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PlayList> {
         val position =params.key ?: PAGING_INITIAL_OFFSET
         return try{
-            val response =service.fetchPlayList(
+            val response =service.fetchPlaylist(
                 token = token,
                 territory = TerritoryEnum.TAIWAN.countryCode,
                 offset = position,

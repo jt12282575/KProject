@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.collect
 class HomePageActivity : AppCompatActivity() {
 
     private var errorState: LoadState.Error? = null
-    val model:HomePageViewModel by viewModels { LiveDataVMFactory }
+    val model:HomePageViewModel by viewModels { HomePageVMFactory }
     private val categories = mutableListOf<Category>()
     private val homePageAdapter by lazy {
         HomePageAdapter(applicationContext,categories){

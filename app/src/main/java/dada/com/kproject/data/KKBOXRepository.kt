@@ -35,8 +35,10 @@ class KKBOXRepository(private val service: KKBOXService,
         )
     }
 
+
+
    suspend fun fetchPlayList(limit: Int, offset:Int, token:String):Response<PlayListResponse>{
-       return service.fetchPlayList(
+       return service.fetchPlaylist(
            token = token,
            limit = limit,
            offset = offset

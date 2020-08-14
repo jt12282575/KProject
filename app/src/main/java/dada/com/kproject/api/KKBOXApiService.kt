@@ -3,6 +3,8 @@ package dada.com.kproject.api
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.model.CategoryResponse
 import dada.com.kproject.model.PlayListResponse
+import dada.com.kproject.model.SonglistResponse
+import dada.com.kproject.model.Tracks
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -43,10 +45,26 @@ interface KKBOXService {
     ):Response<CategoryResponse>
 
     @GET("featured-playlists")
-    suspend fun fetchPlayList(
+    suspend fun fetchPlaylist(
         @Header("Authorization") token: String,
         @Query("territory") territory:String = TerritoryEnum.TAIWAN.countryCode,
         @Query("offset") offset:Int = 0,
         @Query("limit") limit:Int = 15
     ):Response<PlayListResponse>
+
+    @GET("featured-playlists/{playlist_id}/tracks")
+    suspend fun fetchSonglistInPlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlistId:String,
+        @Query("territory") territory:String = TerritoryEnum.TAIWAN.countryCode
+    ):Response<Tracks>
+
+    @GET("/albums/{album_id}/tracks")
+    suspend fun fetchSonglistInAlbum(
+        @Header("Authorization") token: String,
+        @Path("album_id") albumId:String,
+        @Query("territory") territory:String = TerritoryEnum.TAIWAN.countryCode
+    ):Response<Tracks>
+
+
 }

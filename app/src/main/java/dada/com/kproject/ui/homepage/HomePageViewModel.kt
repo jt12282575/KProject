@@ -62,7 +62,7 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel(repo)
 
 }
 
-object LiveDataVMFactory : ViewModelProvider.Factory {
+object HomePageVMFactory : ViewModelProvider.Factory {
 
     private val repo = KKBOXRepository(
         getKKBOXService(),

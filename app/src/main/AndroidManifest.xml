@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dada.com.kproject">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".Global"
         android:allowBackup="true"
@@ -11,9 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
-        <activity android:name="dada.com.kproject.ui.homepage.HomePageActivity">
+        <activity android:name=".ui.songlist.SonglistActivity"></activity>
+        <activity android:name=".ui.homepage.HomePageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
