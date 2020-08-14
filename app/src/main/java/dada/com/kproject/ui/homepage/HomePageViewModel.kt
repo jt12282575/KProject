@@ -31,10 +31,9 @@ import java.util.*
 
 class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
 
-    private val apiQueue:Queue<ApiWrapper> = LinkedList()
+    private val apiQueue: Queue<ApiWrapper> = LinkedList()
     private val mutex = Mutex()
     private val _needFetchToken = MutableLiveData<Boolean>()
-
 
 
     private fun isFetchRemoteTokenIdle() = !mutex.isLocked
@@ -42,11 +41,20 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
         it.value = ApiWrapper(
             apiType = NEW_RELEASE_CATEGORIES,
             offset = 0,
-            limit = INITIAL_CATEGORY)
+            limit = INITIAL_CATEGORY
+        )
     }
 
     private val fetchNewReleaseCategories: LiveData<ApiWrapper>
         get() = _fetchNewReleaseCategories
+
+    fun loadTenCategories() {
+        _fetchNewReleaseCategories.value = ApiWrapper(
+            apiType = NEW_RELEASE_CATEGORIES,
+            offset = 0,
+            limit = INITIAL_CATEGORY
+        )
+    }
 
     private val _fetchSongList = MutableLiveData<ApiWrapper>().also {
         it.value = ApiWrapper(
@@ -55,18 +63,18 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
             limit = SONG_LIST_PAGE
         )
     }
-    private val fetchSongList:LiveData<ApiWrapper>
-    get() = _fetchSongList
+    private val fetchSongList: LiveData<ApiWrapper>
+        get() = _fetchSongList
 
-    private var token:String = (repo.fetchLocalToken()?:"").also {
+    private var token: String = (repo.fetchLocalToken() ?: "").also {
         logi("local token : $it")
-        if (it.isEmpty()){
+        if (it.isEmpty()) {
             logi("token is Empty")
             _needFetchToken.value = true
         }
     }
 
-    val songList = Transformations.switchMap(_fetchSongList){
+    val songList = Transformations.switchMap(_fetchSongList) {
         launchDataLoad {
             repo.fetchSongList(
                 token = token,
@@ -76,97 +84,96 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
         }
     }
 
-    val tenNewReleaseCategories = Transformations.switchMap(fetchNewReleaseCategories) {apiWrapper ->
-        liveData(Dispatchers.IO) {
-            _spinner.postValue(true)
-            try {
-                val response = repo.fetchNewReleaseCategories(
-                    limit = apiWrapper.limit,
-                    token = token)
-                if (response.isSuccessful){
-                    logi("success +summary:  ${response.body()?.summary}")
-                    emit(Resource.success(data = response.body()?.data))
-                }else if(response.code() == 401 || response.code() == 403){
-                    logi("inside error code: ${response.code()}")
-                    if (apiWrapper.firstLoad) {
-                        apiQueue.add(apiWrapper.also {
-                            it.firstLoad =false
-                        })
-                        _needFetchToken.postValue(true)
-                    }else{
-                        emit(
-                            Resource.error(data = null, message =  Global.getContext().getString(
-                                R.string.api_error)))
+    val tenNewReleaseCategories =
+        Transformations.switchMap(fetchNewReleaseCategories) { apiWrapper ->
+            liveData(Dispatchers.IO) {
+                try {
+                    val response = repo.fetchNewReleaseCategories(
+                        limit = apiWrapper.limit,
+                        token = token
+                    )
+                    if (response.isSuccessful) {
+                        logi("success +summary:  ${response.body()?.summary}")
+                        emit(Resource.success(data = response.body()?.data))
+                    } else if (response.code() == 401 || response.code() == 403) {
+                        logi("inside error code: ${response.code()}")
+                        if (apiWrapper.firstLoad) {
+                            apiQueue.add(apiWrapper.also {
+                                it.firstLoad = false
+                            })
+                            _needFetchToken.postValue(true)
+                        } else {
+                            emit(
+                                Resource.error(
+                                    data = null, message = Global.getContext().getString(
+                                        R.string.api_error
+                                    )
+                                )
+                            )
+                        }
                     }
-                }
 
-            }catch (exception: Exception){
-                emit(
-                    Resource.error(data = null, message = exception.message ?: Global.getContext().getString(
-                    R.string.api_error)))
-            }finally {
-                _spinner.postValue(false)
+                } catch (exception: Exception) {
+                    emit(
+                        Resource.error(
+                            data = null,
+                            message = exception.message ?: Global.getContext().getString(
+                                R.string.api_error
+                            )
+                        )
+                    )
+                }
             }
         }
-    }
-
-
 
 
     val fetchToken = Transformations.switchMap(_needFetchToken) {
         logi("start fetch token")
         launchDataLoad {
-                repo.fetchRemoteToken()
+            repo.fetchRemoteToken()
 
         }
 
     }.map {
         viewModelScope.launch(Dispatchers.IO) {
             logi("work in storage token")
-            if(it.data!= null){
-                _showError.postValue(true)
+            if (it.data != null) {
                 token = "${it.data.tokenType} ${it.data.accessToken}"
                 logi("token: $token")
                 repo.saveToken(token)
-                while (apiQueue.isNotEmpty()){
+                while (apiQueue.isNotEmpty()) {
                     val apiWrapper = apiQueue.poll()
                     logi("type: ${apiWrapper.apiType}")
-                    when(apiWrapper?.apiType){
-                        NEW_RELEASE_CATEGORIES ->{
+                    when (apiWrapper?.apiType) {
+                        NEW_RELEASE_CATEGORIES -> {
                             _fetchNewReleaseCategories.postValue(
                                 apiWrapper.also {
                                     it.firstLoad = false
                                 }
                             )
                         }
-                        SONG_LIST->{
-
-                        }
                     }
                 }
-            }else{
-                _showError.value = true
+            } else {
                 apiQueue.clear()
             }
         }
     }
 
 
-    private val _showError = MutableLiveData<Boolean>()
-    val showError:LiveData<Boolean>
-    get() = _showError
-
     private var currentSearchResult: Flow<PagingData<SongList>>? = null
 
-    fun loadSongList():Flow<PagingData<SongList>>{
-        val newResult:Flow<PagingData<SongList>> = repo.fetchSongListStream(token)
+    fun loadSongList(): Flow<PagingData<SongList>> {
+        val lastResult = currentSearchResult
+        if (lastResult != null){
+            return lastResult
+        }
+
+        val newResult: Flow<PagingData<SongList>> = repo.fetchSongListStream(token)
             .cachedIn(viewModelScope)
         currentSearchResult = newResult
         return newResult
     }
-
-
-
 
 
 }

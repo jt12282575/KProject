@@ -25,36 +25,41 @@ class HomePageAdapter(
 
 
     override fun getItemCount(): Int {
-        return super.getItemCount() +
-                HOMEPAGE_CATEGORY_HEADER_SIZE +
-                HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
-                HOMEPAGE_SONG_LIST_HEADER_SIZE
+        return if (categories.isNotEmpty()){
+            super.getItemCount() +
+                    HOMEPAGE_CATEGORY_HEADER_SIZE +
+                    HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
+                    HOMEPAGE_SONG_LIST_HEADER_SIZE
+        }else{
+            super.getItemCount() +
+                    HOMEPAGE_SONG_LIST_HEADER_SIZE
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(position){
-            0 ->{
+        return when {
+            isCategoryHeader(position) -> {
                 CATEGORY_LIST_HEADER
             }
-            1 ->{
+            isCategoryItem(position) -> {
                 CATEGORY_LIST_ITEM
             }
-            2 ->{
+            isSongListHeader(position) -> {
                 SONG_LIST_HEADER
             }
-            else->{
+            else -> {
                 SONG_LIST_ITEM
             }
-
         }
+
     }
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is HeaderViewHolder){
-            if (position == 0){
+            if (isCategoryHeader(position)){
                 holder.bind(context.getString(R.string.category_header))
-            }else if(position == 2){
+            }else if(isSongListHeader(position)){
                 holder.bind(context.getString(R.string.song_list_header))
             }
         }else if(holder is CategoryListViewHolder){
@@ -70,23 +75,29 @@ class HomePageAdapter(
     }
 
     private fun mapSongListPosition(position:Int):Int{
-        return position - (
-                HOMEPAGE_CATEGORY_HEADER_SIZE +
-                        HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
-                        HOMEPAGE_SONG_LIST_HEADER_SIZE
-                )
+        return if (categories.isNotEmpty()){
+            position - (
+                    HOMEPAGE_CATEGORY_HEADER_SIZE +
+                            HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
+                            HOMEPAGE_SONG_LIST_HEADER_SIZE
+                    )
+        }else{
+            position - (
+                            HOMEPAGE_SONG_LIST_HEADER_SIZE
+                    )
+        }
     }
 
-    fun isCategoryHeader(position:Int):Boolean{
-        return position == 0
+    private fun isCategoryHeader(position:Int):Boolean{
+        return (position == 0 && categories.isNotEmpty())
     }
 
-    fun isCategoryItem(position:Int):Boolean{
-        return position == 1
+    private fun isCategoryItem(position:Int):Boolean{
+        return (position == 1 && categories.isNotEmpty())
     }
 
-    fun isSongListHeader(position:Int):Boolean{
-        return position == 2
+    private fun isSongListHeader(position:Int):Boolean{
+        return (position == 2 && categories.isNotEmpty()) || (position == 0 && categories.isEmpty())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

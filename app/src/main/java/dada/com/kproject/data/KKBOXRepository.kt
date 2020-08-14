@@ -60,7 +60,6 @@ class KKBOXRepository(private val service: KKBOXService,
     fun fetchSongListStream(token:String): Flow<PagingData<SongList>> {
         return Pager(
             config = PagingConfig(
-                prefetchDistance = 2,
                 pageSize = ApiConst.PAGING_PAGE_SIZE,
                 enablePlaceholders = false),
             pagingSourceFactory ={KKBOXPagingSource(service,token)}

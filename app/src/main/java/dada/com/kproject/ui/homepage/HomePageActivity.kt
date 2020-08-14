@@ -4,21 +4,30 @@ package dada.com.kproject.ui.homepage
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dada.com.kproject.R
+import dada.com.kproject.const.ApiConst
+import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_HEADER_INDEX
 import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_ITEM_INDEX
+import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_HEADER_SIZE
 import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE
 import dada.com.kproject.model.Category
 import dada.com.kproject.util.logi
+import dada.com.kproject.util.wrapper.ApiWrapper
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
 class HomePageActivity : AppCompatActivity() {
 
-    val model:HomePageViewModel by viewModels() { LiveDataVMFactory }
+    val model:HomePageViewModel by viewModels { LiveDataVMFactory }
     private val categories = mutableListOf<Category>()
     private val homePageAdapter by lazy {
         HomePageAdapter(applicationContext,categories){
@@ -30,7 +39,38 @@ class HomePageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_homepage)
         ah_rcv_list.apply {
             layoutManager = LinearLayoutManager(applicationContext)
-            adapter = homePageAdapter
+
+            adapter = homePageAdapter.withLoadStateHeaderAndFooter(
+                header = SongListStateAdapter{
+                    homePageAdapter.retry()
+                },
+                footer = SongListStateAdapter{
+                    homePageAdapter.retry()
+                }
+            )
+        }
+
+        ah_retry_button.setOnClickListener {
+            homePageAdapter.retry()
+            model.loadTenCategories()
+        }
+
+        homePageAdapter.addLoadStateListener { loadState ->
+            ah_rcv_list.isVisible = loadState.source.refresh is LoadState.NotLoading
+            ah_progress_bar.isVisible = loadState.source.refresh is LoadState.Loading
+            ah_retry_button.isVisible = loadState.source.refresh is LoadState.Error
+
+        }
+
+        lifecycleScope.launch {
+            homePageAdapter.loadStateFlow
+                .distinctUntilChangedBy {
+                    it.refresh
+                }.filter {
+                    it.refresh is LoadState.NotLoading
+                }.collect {
+                    ah_rcv_list.scrollToPosition(0)
+                }
         }
 
 
@@ -38,7 +78,7 @@ class HomePageActivity : AppCompatActivity() {
             if (it.data != null){
                 categories.clear()
                 categories.addAll(it.data!!)
-                homePageAdapter.notifyItemRangeChanged(CATEGORY_LIST_ITEM_INDEX,HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE)
+                homePageAdapter.notifyDataSetChanged()
             }
             logi("size : ${it.data?.size}")
             if(it?.message != null){
@@ -46,9 +86,6 @@ class HomePageActivity : AppCompatActivity() {
             }
         })
 
-        model.showError.observe(this, Observer {
-            //TODO 畫面是否 error message 蓋住
-        })
 
         model.songList.observe(this,
             Observer{
