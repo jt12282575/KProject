@@ -21,7 +21,8 @@ import retrofit2.Response
 class KKBOXRepository(private val service: KKBOXService,
                       private val tokenService: KKBOXTokenService,
                       private val sharedPreferencesProvider: SharedPreferencesProvider
-) {
+):BaseRepository
+{
 
 
     suspend fun fetchNewReleaseCategories(limit: Int,token:String): Response<CategoryResponse> {
@@ -42,7 +43,7 @@ class KKBOXRepository(private val service: KKBOXService,
        )
    }
 
-    suspend fun fetchRemoteToken(): TokenResponse {
+    override suspend fun fetchRemoteToken(): TokenResponse {
         return tokenService.getAccessToken(
             grantType = ApiConst.CLIENT_CREDENTIALS,
             clientId = BuildConfig.KKBOX_ID,
@@ -50,18 +51,19 @@ class KKBOXRepository(private val service: KKBOXService,
         )
     }
 
-    fun fetchLocalToken():String? {
-        val tokenStr =  sharedPreferencesProvider.getToken()
-        logi("fetch from local $tokenStr")
 
-        return ""
-    }
 
     private var pagingSource:KKBOXPagingSource? = null
 
-    fun saveToken(token:String){
+    override fun saveToken(token:String){
         sharedPreferencesProvider.saveToken(token)
         pagingSource?.setToken(token)
+    }
+
+    override fun getLocalToken(): String? {
+        val tokenStr =  sharedPreferencesProvider.getToken()
+        logi("fetch from local $tokenStr")
+        return tokenStr
     }
 
     fun fetchPlayListStream(token:String): Flow<PagingData<PlayList>> {

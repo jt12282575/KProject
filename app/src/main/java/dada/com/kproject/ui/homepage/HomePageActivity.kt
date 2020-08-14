@@ -3,8 +3,6 @@ package dada.com.kproject.ui.homepage
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -12,9 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dada.com.kproject.R
-import dada.com.kproject.exception.KKBOXAuthException
 import dada.com.kproject.model.Category
-import dada.com.kproject.model.Owner
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.needToRefreshToken
 import kotlinx.android.synthetic.main.activity_homepage.*
@@ -84,34 +80,27 @@ class HomePageActivity : AppCompatActivity() {
                 }
         }
 
-        model.fetchToken.observe(this, Observer {
+        model.fetchToken().observe(this, Observer {
             logi("finish fetch")
         })
 
 
-        model.tenNewReleaseCategories.observe(this, Observer {
-            if (it.data != null){
+        model.fetchTenNewReleaseCategories().observe(this, Observer {
+            if (it.data != null && it.data.data.isNotEmpty()){
                 categories.clear()
-                categories.addAll(it.data!!)
+                categories.addAll(it.data.data)
                 homePageAdapter.notifyDataSetChanged()
             }
-            logi("size : ${it.data?.size}")
+            logi("size : ${it.data?.data?.size}")
             if(it?.message != null){
                 logi("error : ${it?.message}")
             }
         })
 
 
-        model.playList.observe(this,
-            Observer{
-                logi("play list size : ${it.data?.body()?.data?.size}")
-                if(it?.message != null){
-                    logi("error : ${it?.message}")
-                }
-            }
-        )
 
-        model.tokenRefreshed().observe(this, Observer {
+
+        model.isTokenRefreshed().observe(this, Observer {
            errorState?.let {
                logi("token refreshed :${it.error.message}")
                if (needToRefreshToken(it.error)){
@@ -122,9 +111,13 @@ class HomePageActivity : AppCompatActivity() {
         })
 
 
-
+        loadCategories()
         loadPlayList()
 
+    }
+
+    private fun loadCategories() {
+        model.loadTenCategories()
     }
 
     private fun loadPlayList(){

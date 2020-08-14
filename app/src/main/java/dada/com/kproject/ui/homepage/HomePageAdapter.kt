@@ -1,6 +1,7 @@
 package dada.com.kproject.ui.homepage
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -136,11 +137,11 @@ class HomePageAdapter(
     companion object {
         private val PLAY_LIST_COMPARATOR = object : DiffUtil.ItemCallback<PlayList>() {
             override fun areItemsTheSame(oldItem: PlayList, newItem: PlayList): Boolean {
-                return (oldItem.id == newItem.id)
+                return (TextUtils.equals(oldItem.id , newItem.id))
             }
 
             override fun areContentsTheSame(oldItem: PlayList, newItem: PlayList): Boolean =
-                ( (oldItem.id == newItem.id) && (oldItem.updatedAt == newItem.updatedAt))
+                ( (TextUtils.equals(oldItem.id , newItem.id)) && (TextUtils.equals(oldItem.updatedAt , newItem.updatedAt)))
         }
     }
 }

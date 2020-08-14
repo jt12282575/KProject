@@ -8,6 +8,7 @@ import dada.com.kproject.const.ApiConst.Companion.PAGING_PAGE_SIZE
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.exception.KKBOXAuthException
 import dada.com.kproject.model.PlayList
+import dada.com.kproject.util.logi
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -44,10 +45,13 @@ class KKBOXPagingSource(
             if (thrownAuthExceptionFlag){
                 thrownAuthExceptionFlag = false
             }
+            response.body()?.data?.forEach {
+                logi("id: ${it.id}")
+            }
             val playLists = response.body()?.data?: mutableListOf()
             LoadResult.Page(
                 data = playLists,
-                prevKey = if (position == PAGING_INITIAL_OFFSET) null else position - PAGING_PAGE_SIZE,
+                prevKey = if (position == PAGING_INITIAL_OFFSET) null else position - PAGING_PAGE_SIZE ,
                 nextKey = if (playLists.isEmpty()) null else position + PAGING_PAGE_SIZE
             )
         }catch (exception: IOException) {
@@ -59,5 +63,9 @@ class KKBOXPagingSource(
         }
 
     }
+
+
+
+
 
 }

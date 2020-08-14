@@ -13,6 +13,7 @@ import dada.com.kproject.const.ApiConst.Companion.PLAY_LIST
 import dada.com.kproject.const.ApiConst.Companion.PLAY_LIST_PER_PAGE
 import dada.com.kproject.data.KKBOXRepository
 import dada.com.kproject.local.SharedPreferencesProvider
+import dada.com.kproject.model.CategoryResponse
 import dada.com.kproject.model.PlayList
 import dada.com.kproject.ui.BaseViewModel
 import dada.com.kproject.util.logi
@@ -24,137 +25,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.*
 
-class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
-
-    private val apiQueue: Queue<ApiWrapper> = LinkedList()
-    private val mutex = Mutex()
+class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel(repo) {
 
 
-
-    private fun isFetchRemoteTokenIdle() = !mutex.isLocked
-    private val _fetchNewReleaseCategories = MutableLiveData<ApiWrapper>().also {
-        it.value = ApiWrapper(
-            apiType = NEW_RELEASE_CATEGORIES,
-            offset = 0,
-            limit = INITIAL_CATEGORY
-        )
-    }
-
-    private val fetchNewReleaseCategories: LiveData<ApiWrapper>
-        get() = _fetchNewReleaseCategories
 
     fun loadTenCategories() {
-        _fetchNewReleaseCategories.value = ApiWrapper(
+        _apiWrapperData.value = ApiWrapper(
             apiType = NEW_RELEASE_CATEGORIES,
             offset = 0,
             limit = INITIAL_CATEGORY
         )
     }
 
-    private val _fetchPlayList = MutableLiveData<ApiWrapper>().also {
-        it.value = ApiWrapper(
-            apiType = PLAY_LIST,
-            offset = 0,
-            limit = PLAY_LIST_PER_PAGE
-        )
-    }
-    private val fetchPlayList: LiveData<ApiWrapper>
-        get() = _fetchPlayList
 
-    private var token: String = (repo.fetchLocalToken() ?: "").also {
-        logi("local token : $it")
-        if (it.isEmpty()) {
-            logi("token is Empty")
-            _needFetchToken.value = true
-        }
-    }
-
-
-    val playList = Transformations.switchMap(_fetchPlayList) {
-        launchDataLoad {
-            repo.fetchPlayList(
-                token = token,
-                offset = it.offset,
-                limit = it.limit
-            )
-        }
-    }
-
-    val tenNewReleaseCategories =
-        Transformations.switchMap(fetchNewReleaseCategories) { apiWrapper ->
-            liveData(Dispatchers.IO) {
-                try {
-                    val response = repo.fetchNewReleaseCategories(
-                        limit = apiWrapper.limit,
-                        token = token
-                    )
-                    if (response.isSuccessful) {
-                        logi("success +summary:  ${response.body()?.summary}")
-                        emit(Resource.success(data = response.body()?.data))
-                    } else if (response.code() == 401 || response.code() == 403) {
-                        logi("inside error code: ${response.code()}")
-                        if (apiWrapper.firstLoad) {
-                            apiQueue.add(apiWrapper.also {
-                                it.firstLoad = false
-                            })
-                            _needFetchToken.postValue(true)
-                        } else {
-                            emit(
-                                Resource.error(
-                                    data = null, message = Global.getContext().getString(
-                                        R.string.api_error
-                                    )
-                                )
-                            )
-                        }
-                    }
-
-                } catch (exception: Exception) {
-                    emit(
-                        Resource.error(
-                            data = null,
-                            message = exception.message ?: Global.getContext().getString(
-                                R.string.api_error
-                            )
-                        )
-                    )
-                }
-            }
-        }
-
-
-    val fetchToken = Transformations.switchMap(_needFetchToken) {
-        logi("start fetch token")
-        launchDataLoad {
-            repo.fetchRemoteToken()
-
-        }
-
-    }.map {
-        viewModelScope.launch(Dispatchers.IO) {
-            logi("work in storage token")
-            if (it.data != null) {
-                token = "${it.data.tokenType} ${it.data.accessToken}"
-                logi("token: $token")
-                repo.saveToken(token)
-                _tokenRefreshed.postValue(true)
-
-                while (apiQueue.isNotEmpty()) {
-                    val apiWrapper = apiQueue.poll()
-                    logi("type: ${apiWrapper.apiType}")
-                    when (apiWrapper?.apiType) {
-                        NEW_RELEASE_CATEGORIES -> {
-                            _fetchNewReleaseCategories.postValue(
-                                apiWrapper.also {
-                                    it.firstLoad = false
-                                }
-                            )
-                        }
-                    }
-                }
-            } else {
-                apiQueue.clear()
-            }
+    fun fetchTenNewReleaseCategories() = apiWrapperData.switchMap {
+        launchApi(it) { token ->
+            repo.fetchNewReleaseCategories(limit = INITIAL_CATEGORY,token = token)
         }
     }
 
