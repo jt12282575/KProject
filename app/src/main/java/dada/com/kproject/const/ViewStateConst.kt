@@ -18,5 +18,9 @@ class ViewStateConst {
         const val SONG_LIST_HEADER_INDEX = 2
 
 
+        const val NO_ITEM = -1
+
+
+
     }
 }

@@ -1,5 +1,8 @@
 package dada.com.kproject.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import dada.com.kproject.BuildConfig
 import dada.com.kproject.api.KKBOXService
 import dada.com.kproject.api.KKBOXTokenService
@@ -8,9 +11,11 @@ import dada.com.kproject.const.ApiConst.Companion.CATEGORY_COMPLEX
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.local.SharedPreferencesProvider
 import dada.com.kproject.model.CategoryResponse
+import dada.com.kproject.model.SongList
 import dada.com.kproject.model.SongListResponse
 import dada.com.kproject.model.TokenResponse
 import dada.com.kproject.util.logi
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class KKBOXRepository(private val service: KKBOXService,
@@ -51,5 +56,15 @@ class KKBOXRepository(private val service: KKBOXService,
     }
 
     fun saveToken(token:String) = sharedPreferencesProvider.saveToken(token)
+
+    fun fetchSongListStream(token:String): Flow<PagingData<SongList>> {
+        return Pager(
+            config = PagingConfig(
+                prefetchDistance = 2,
+                pageSize = ApiConst.PAGING_PAGE_SIZE,
+                enablePlaceholders = false),
+            pagingSourceFactory ={KKBOXPagingSource(service,token)}
+        ).flow
+    }
 
 }

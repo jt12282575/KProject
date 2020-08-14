@@ -19,5 +19,11 @@ class ApiConst {
         //Api type
         const val NEW_RELEASE_CATEGORIES = 0
         const val SONG_LIST = 1
+
+        //Paging
+        const val PAGING_PAGE_SIZE = 10
+        const val PAGING_INITIAL_OFFSET = 0
+
+
     }
 }

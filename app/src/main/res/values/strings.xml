@@ -3,4 +3,6 @@
     <string name="api_error">發生了一些問題，請稍後重新嘗試。</string>
     <string name="category_header">最新發行專輯</string>
     <string name="song_list_header">近期精選歌單</string>
+    <string name="retry">立即上線</string>
+    <string name="auth_exception">Invalid token</string>
 </resources>

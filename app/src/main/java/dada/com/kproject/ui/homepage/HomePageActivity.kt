@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import dada.com.kproject.R
 import dada.com.kproject.const.ViewStateConst.Companion.CATEGORY_LIST_ITEM_INDEX
@@ -12,6 +13,8 @@ import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_LIST_V
 import dada.com.kproject.model.Category
 import dada.com.kproject.util.logi
 import kotlinx.android.synthetic.main.activity_homepage.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomePageActivity : AppCompatActivity() {
 
@@ -29,6 +32,7 @@ class HomePageActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = homePageAdapter
         }
+
 
         model.tenNewReleaseCategories.observe(this, Observer {
             if (it.data != null){
@@ -59,5 +63,15 @@ class HomePageActivity : AppCompatActivity() {
             logi("finish fetch")
         })
 
+        loadSongList()
+
+    }
+
+    private fun loadSongList(){
+        lifecycleScope.launch {
+            model.loadSongList().collectLatest{
+                homePageAdapter.submitData(it)
+            }
+        }
     }
 }

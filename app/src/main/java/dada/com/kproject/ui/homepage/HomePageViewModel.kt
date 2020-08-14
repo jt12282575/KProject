@@ -1,22 +1,30 @@
 package dada.com.kproject.ui.homepage
 
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dada.com.kproject.Global
 import dada.com.kproject.R
 import dada.com.kproject.api.getKKBOXService
 import dada.com.kproject.api.getKKBOXTokenService
 import dada.com.kproject.const.ApiConst.Companion.INITIAL_CATEGORY
 import dada.com.kproject.const.ApiConst.Companion.NEW_RELEASE_CATEGORIES
+import dada.com.kproject.const.ApiConst.Companion.PAGING_PAGE_SIZE
 import dada.com.kproject.const.ApiConst.Companion.SONG_LIST
 import dada.com.kproject.const.ApiConst.Companion.SONG_LIST_PAGE
+import dada.com.kproject.data.KKBOXPagingSource
 import dada.com.kproject.data.KKBOXRepository
 import dada.com.kproject.local.SharedPreferencesProvider
 import dada.com.kproject.model.Category
+import dada.com.kproject.model.SongList
 import dada.com.kproject.ui.BaseViewModel
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.wrapper.ApiWrapper
 import dada.com.kproject.util.wrapper.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.*
@@ -144,11 +152,18 @@ class HomePageViewModel(private val repo: KKBOXRepository) : BaseViewModel() {
     }
 
 
-
-
     private val _showError = MutableLiveData<Boolean>()
     val showError:LiveData<Boolean>
     get() = _showError
+
+    private var currentSearchResult: Flow<PagingData<SongList>>? = null
+
+    fun loadSongList():Flow<PagingData<SongList>>{
+        val newResult:Flow<PagingData<SongList>> = repo.fetchSongListStream(token)
+            .cachedIn(viewModelScope)
+        currentSearchResult = newResult
+        return newResult
+    }
 
 
 

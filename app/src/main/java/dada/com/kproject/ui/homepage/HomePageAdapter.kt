@@ -59,9 +59,22 @@ class HomePageAdapter(
             }
         }else if(holder is CategoryListViewHolder){
             holder.bind(categories,onCategoryClick)
-        }else{
+        }else if(holder is SongListViewHolder){
+            val songList =getItem(mapSongListPosition(position))
+            songList?.let {
+                holder.bind(it)
+            }
+        } else{
 
         }
+    }
+
+    private fun mapSongListPosition(position:Int):Int{
+        return position - (
+                HOMEPAGE_CATEGORY_HEADER_SIZE +
+                        HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
+                        HOMEPAGE_SONG_LIST_HEADER_SIZE
+                )
     }
 
     fun isCategoryHeader(position:Int):Boolean{
@@ -100,9 +113,9 @@ class HomePageAdapter(
                 )
             }
             else->{
-                HeaderViewHolder(
+                SongListViewHolder(
                     LayoutInflater.from(context).inflate(
-                        R.layout.item_header, parent, false
+                        R.layout.item_song_list, parent, false
                     )
                 )
             }

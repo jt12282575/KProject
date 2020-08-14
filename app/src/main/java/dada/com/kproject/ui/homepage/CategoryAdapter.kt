@@ -14,11 +14,6 @@ class CategoryAdapter(
 ): RecyclerView.Adapter<CategoryViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_category,parent, false)
-//        val lp = ViewGroup.LayoutParams(
-//            ViewGroup.LayoutParams.MATCH_PARENT,
-//            ViewGroup.LayoutParams.MATCH_PARENT
-//        )
-//        view.layoutParams = lp
         return CategoryViewHolder(view)
     }
 
