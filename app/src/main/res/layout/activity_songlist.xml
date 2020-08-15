@@ -7,6 +7,7 @@
     tools:context=".ui.songlist.SonglistActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/as_appbar"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -38,7 +39,7 @@
     </com.google.android.material.appbar.AppBarLayout>
    <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
+       android:layout_height="match_parent"
        app:layout_behavior="@string/appbar_scrolling_view_behavior"
        >
        <androidx.recyclerview.widget.RecyclerView
@@ -50,6 +51,28 @@
            app:layout_constraintLeft_toLeftOf="parent"
            app:layout_constraintRight_toRightOf="parent"
            />
+       <ProgressBar
+           android:id="@+id/as_progress_bar"
+           style="?android:attr/progressBarStyle"
+           android:indeterminateTint="@color/colorPrimary"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintLeft_toLeftOf="parent"
+           app:layout_constraintRight_toRightOf="parent"
+           android:layout_marginTop="120dp"
+           />
+       <Button
+           android:id="@+id/as_retry_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:text="@string/retry"
+           android:visibility="gone"
+           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintLeft_toLeftOf="parent"
+           app:layout_constraintRight_toRightOf="parent"
+           app:layout_constraintBottom_toBottomOf="parent" />
    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

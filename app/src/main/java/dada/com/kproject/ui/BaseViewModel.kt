@@ -56,15 +56,16 @@ open class BaseViewModel(private  val repo:BaseRepository):ViewModel() {
                             data = response.body()
                         )
                     )
+                    _spinner.postValue(false)
                 }else{
                     emit(Resource.error(data = null, message =  Global.getContext().getString(
                         R.string.api_error)))
+                    _spinner.postValue(false)
                 }
 
             }catch (exception: Exception){
                 emit(Resource.error(data = null, message = exception.message ?: Global.getContext().getString(
                     R.string.api_error)))
-            }finally {
                 _spinner.postValue(false)
             }
         }
@@ -99,14 +100,11 @@ open class BaseViewModel(private  val repo:BaseRepository):ViewModel() {
 
     fun <T> launchDataLoad (block: suspend() -> T) =
         liveData(Dispatchers.IO) {
-            _spinner.postValue(true)
             try {
                 emit(Resource.success(data = block.invoke()))
             }catch (exception: Exception){
                 emit(Resource.error(data = null, message = exception.message ?: Global.getContext().getString(
                     R.string.api_error)))
-            }finally {
-                _spinner.postValue(false)
             }
         }
 

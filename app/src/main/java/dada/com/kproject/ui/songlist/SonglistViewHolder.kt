@@ -1,5 +1,6 @@
 package dada.com.kproject.ui.songlist
 
+import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -7,6 +8,7 @@ import dada.com.kproject.R
 import dada.com.kproject.model.Album
 import dada.com.kproject.model.Song
 import dada.com.kproject.util.DateUtil
+import dada.com.kproject.util.logi
 import kotlinx.android.synthetic.main.item_song.view.*
 import kotlin.math.roundToInt
 
@@ -15,6 +17,8 @@ class SonglistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val sdfShowFormat = DateUtil.getShowDateFormat()
 
     fun bind(song: Song, album: Album?) {
+
+
         itemView.is_tv_song_name.text = song.name
 
         val updateDate = sdfAlbumFormat.parse(
@@ -40,7 +44,10 @@ class SonglistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             artist = album.artist.name
             imageUrl = album!!.images[0].url
         }
+
         itemView.is_tv_artist_and_date.text = "$artist@${dateStr}"
+
+
         val imageSize: Int =
             itemView.context.resources.getDimension(R.dimen.thumb_image_size).roundToInt()
 
@@ -49,5 +56,6 @@ class SonglistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .resize(imageSize, imageSize)
             .centerCrop()
             .into(itemView.is_iv_image)
+
     }
 }

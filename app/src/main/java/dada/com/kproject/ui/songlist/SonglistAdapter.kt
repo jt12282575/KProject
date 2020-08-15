@@ -1,5 +1,6 @@
 package dada.com.kproject.ui.songlist
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import dada.com.kproject.const.ViewStateConst.Companion.SONGLIST_ITEM
 import dada.com.kproject.model.Album
 import dada.com.kproject.model.Song
 import dada.com.kproject.ui.HeaderViewHolder
+import kotlinx.android.synthetic.main.item_song.view.*
 
 class SonglistAdapter(
     private val songlist: List<Song>,
@@ -55,8 +57,14 @@ class SonglistAdapter(
             is HeaderViewHolder -> {
                 holder.bind(holder.itemView.context.getString(R.string.songlist_header))
             }
-            else -> {
-                (holder as SonglistViewHolder).bind(songlist[mapSonglistPosition(position)],album)
+            is SonglistViewHolder-> {
+
+                holder.bind(songlist[mapSonglistPosition(position)],album)
+                holder.itemView.is_tv_artist_and_date.setOnClickListener {
+                    holder.itemView.is_tv_artist_and_date.isSelected = true
+                    holder.itemView.is_tv_artist_and_date.marqueeRepeatLimit = 1
+                    holder.itemView.is_tv_artist_and_date.ellipsize = TextUtils.TruncateAt.MARQUEE
+                }
             }
 
         }

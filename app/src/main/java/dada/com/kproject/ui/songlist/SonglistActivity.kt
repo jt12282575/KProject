@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.picasso.Callback
@@ -17,6 +18,7 @@ import dada.com.kproject.const.BundleKey.Companion.ARG_TYPE
 import dada.com.kproject.model.Album
 import dada.com.kproject.model.Song
 import dada.com.kproject.util.logi
+import dada.com.kproject.util.wrapper.Status
 import kotlinx.android.synthetic.main.activity_songlist.*
 import java.lang.Exception
 
@@ -39,17 +41,20 @@ class SonglistActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_songlist)
         init()
-        logi("id: $id")
         model.loadSonglist(id,type)
 
         as_rcv_songlist.apply {
             layoutManager = LinearLayoutManager(this@SonglistActivity)
             adapter = songlistAdapter
         }
+
         val dm = DisplayMetrics()
+        as_retry_button.setOnClickListener {
+            as_retry_button.isEnabled = false
+            model.loadSonglist(id,type)
+        }
+
         this.windowManager.defaultDisplay.getMetrics(dm)
-
-
         if (imageUrl.isNotEmpty()){
             Picasso.get()
                 .load(imageUrl)
@@ -60,14 +65,23 @@ class SonglistActivity : AppCompatActivity() {
                 .into(as_iv_cover_image)
         }
 
-
+        model.spinner.observe(this, Observer {
+            as_progress_bar.isVisible = it
+        })
 
         model.fetchTracks().observe(this, Observer {
+            as_retry_button.isEnabled = true
             if (it.data != null){
                 songlist.clear()
                 songlist.addAll(it.data.data)
                 songlistAdapter.notifyDataSetChanged()
             }
+            as_retry_button.isVisible = it.status == Status.ERROR
+            as_appbar.isVisible = it.status != Status.ERROR
+        })
+
+        model.fetchToken().observe(this, Observer {
+
         })
 
 
