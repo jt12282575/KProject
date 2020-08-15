@@ -8,6 +8,7 @@
         android:id="@+id/ic_iv_cover_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:transitionName="@string/image_anim"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="16dp"

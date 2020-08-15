@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -15,20 +16,20 @@ import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_CATEGORY_LIST_V
 import dada.com.kproject.const.ViewStateConst.Companion.HOMEPAGE_PLAY_LIST_HEADER_SIZE
 import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_HEADER
 import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_ITEM
-import dada.com.kproject.model.Category
+import dada.com.kproject.model.Album
 import dada.com.kproject.model.PlayList
 import dada.com.kproject.ui.HeaderViewHolder
 
 class HomePageAdapter(
     private val context: Context,
-    private val categories:List<Category>,
-    private val onCategoryClick:(category:Category)->Unit,
+    private val albums:List<Album>,
+    private val onCategoryClick:(album:Album)->Unit,
     private val onPlaylistClick:(playlist:PlayList)->Unit
 ): PagingDataAdapter<PlayList, RecyclerView.ViewHolder>(PLAY_LIST_COMPARATOR) {
 
 
     override fun getItemCount(): Int {
-        return if (categories.isNotEmpty()){
+        return if (albums.isNotEmpty()){
             super.getItemCount() +
                     HOMEPAGE_CATEGORY_HEADER_SIZE +
                     HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
@@ -66,7 +67,7 @@ class HomePageAdapter(
                 holder.bind(context.getString(R.string.play_list_header))
             }
         }else if(holder is CategoryListViewHolder){
-            holder.bind(categories,onCategoryClick)
+            holder.bind(albums,onCategoryClick)
         }else if(holder is PlayListViewHolder){
             val playList =getItem(mapPlayListPosition(position))
             playList?.let {playlist ->
@@ -81,7 +82,7 @@ class HomePageAdapter(
     }
 
     private fun mapPlayListPosition(position:Int):Int{
-        return if (categories.isNotEmpty()){
+        return if (albums.isNotEmpty()){
             position - (
                     HOMEPAGE_CATEGORY_HEADER_SIZE +
                             HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE +
@@ -95,15 +96,15 @@ class HomePageAdapter(
     }
 
     private fun isCategoryHeader(position:Int):Boolean{
-        return (position == 0 && categories.isNotEmpty())
+        return (position == 0 && albums.isNotEmpty())
     }
 
     private fun isCategoryItem(position:Int):Boolean{
-        return (position == 1 && categories.isNotEmpty())
+        return (position == 1 && albums.isNotEmpty())
     }
 
     private fun isPlayListHeader(position:Int):Boolean{
-        return (position == 2 && categories.isNotEmpty()) || (position == 0 && categories.isEmpty())
+        return (position == 2 && albums.isNotEmpty()) || (position == 0 && albums.isEmpty())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

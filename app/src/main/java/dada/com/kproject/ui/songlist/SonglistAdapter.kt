@@ -7,12 +7,13 @@ import dada.com.kproject.R
 import dada.com.kproject.const.ViewStateConst.Companion.SONGLIST_HEADER
 import dada.com.kproject.const.ViewStateConst.Companion.SONGLIST_HEADER_SIZE
 import dada.com.kproject.const.ViewStateConst.Companion.SONGLIST_ITEM
+import dada.com.kproject.model.Album
 import dada.com.kproject.model.Song
 import dada.com.kproject.ui.HeaderViewHolder
 
 class SonglistAdapter(
     private val songlist: List<Song>,
-    private val albumReleaseDate:String,
+    private val album: Album?,
     private val songOnClick:((song:Song)->Unit)
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -55,7 +56,7 @@ class SonglistAdapter(
                 holder.bind(holder.itemView.context.getString(R.string.songlist_header))
             }
             else -> {
-                (holder as SonglistViewHolder).bind(songlist[mapSonglistPosition(position)],albumReleaseDate)
+                (holder as SonglistViewHolder).bind(songlist[mapSonglistPosition(position)],album)
             }
 
         }

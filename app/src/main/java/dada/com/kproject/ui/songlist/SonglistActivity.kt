@@ -6,16 +6,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dada.com.kproject.R
 import dada.com.kproject.const.ApiConst.Companion.SOMETHING_WRONG
+import dada.com.kproject.const.BundleKey.Companion.ARG_ALBUM
 import dada.com.kproject.const.BundleKey.Companion.ARG_ID
 import dada.com.kproject.const.BundleKey.Companion.ARG_IMAGE
-import dada.com.kproject.const.BundleKey.Companion.ARG_RELEASE_DATE
 import dada.com.kproject.const.BundleKey.Companion.ARG_TYPE
+import dada.com.kproject.model.Album
 import dada.com.kproject.model.Song
 import dada.com.kproject.util.logi
 import kotlinx.android.synthetic.main.activity_songlist.*
+import java.lang.Exception
 
 
 class SonglistActivity : AppCompatActivity() {
@@ -24,8 +27,9 @@ class SonglistActivity : AppCompatActivity() {
     private var imageUrl = ""
     private var releaseDate = ""
     private val songlist = mutableListOf<Song>()
+    private var album: Album? = null
     private val songlistAdapter  by lazy {
-        SonglistAdapter(songlist,releaseDate){
+        SonglistAdapter(songlist,album){
 
         }
     }
@@ -49,8 +53,10 @@ class SonglistActivity : AppCompatActivity() {
         if (imageUrl.isNotEmpty()){
             Picasso.get()
                 .load(imageUrl)
+                .noFade()
                 .resize(dm.widthPixels,dm.widthPixels)
                 .centerCrop()
+                .placeholder(R.color.white)
                 .into(as_iv_cover_image)
         }
 
@@ -71,6 +77,9 @@ class SonglistActivity : AppCompatActivity() {
         id = intent.getStringExtra(ARG_ID)
         type = intent.getIntExtra(ARG_TYPE,SOMETHING_WRONG)
         imageUrl = intent.getStringExtra(ARG_IMAGE)
-//        releaseDate = intent.getStringExtra(ARG_RELEASE_DATE)
+        val albumObj  = intent.getSerializableExtra(ARG_ALBUM)
+        albumObj?.let {
+            album = albumObj as Album
+        }
     }
 }

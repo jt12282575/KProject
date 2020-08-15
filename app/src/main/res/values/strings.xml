@@ -8,4 +8,5 @@
     <string name="reconnect">立即上線</string>
     <string name="auth_exception">Invalid token</string>
     <string name="api_exception">This api will not be called in this page</string>
+    <string name="image_anim">image_anim</string>
 </resources>

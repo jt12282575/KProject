@@ -4,7 +4,9 @@ package dada.com.kproject.ui.homepage
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.viewModels
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -13,11 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dada.com.kproject.R
 import dada.com.kproject.const.ApiConst.Companion.NEW_RELEASE_CATEGORIES_TRACKS
 import dada.com.kproject.const.ApiConst.Companion.PLAY_LIST_TRACKS
+import dada.com.kproject.const.BundleKey.Companion.ARG_ALBUM
 import dada.com.kproject.const.BundleKey.Companion.ARG_ID
 import dada.com.kproject.const.BundleKey.Companion.ARG_IMAGE
-import dada.com.kproject.const.BundleKey.Companion.ARG_RELEASE_DATE
 import dada.com.kproject.const.BundleKey.Companion.ARG_TYPE
-import dada.com.kproject.model.Category
+import dada.com.kproject.model.Album
 import dada.com.kproject.ui.songlist.SonglistActivity
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.needToRefreshToken
@@ -32,16 +34,16 @@ class HomePageActivity : AppCompatActivity() {
 
     private var errorState: LoadState.Error? = null
     val model: HomePageViewModel by viewModels { HomePageVMFactory }
-    private val categories = mutableListOf<Category>()
+    private val categories = mutableListOf<Album>()
     private val homePageAdapter by lazy {
         val intent = Intent(this, SonglistActivity::class.java)
         HomePageAdapter(applicationContext, categories,
-            onCategoryClick = {
+            onCategoryClick = {album:Album ->
                 intent.apply {
-                    putExtra(ARG_ID, it.id)
+                    putExtra(ARG_ID, album.id)
                     putExtra(ARG_TYPE, NEW_RELEASE_CATEGORIES_TRACKS)
-                    putExtra(ARG_IMAGE, it.images[1].url)
-                    putExtra(ARG_RELEASE_DATE,it.releaseDate)
+                    putExtra(ARG_IMAGE, album.images[1].url)
+                    putExtra(ARG_ALBUM,album)
                 }
                 startActivity(intent)
             },

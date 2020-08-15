@@ -11,7 +11,7 @@ data class Album(
     @SerializedName("available_territories")
     val availableTerritories:List<String>,
     @SerializedName("release_date")
-    val releaseData:String,
+    val releaseDate:String,
     val images:List<Image>,
     val artist:Artist
-): Serializable
+):Serializable

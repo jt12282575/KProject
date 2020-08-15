@@ -1,7 +1,6 @@
 package dada.com.kproject.model
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 data class Song(
     val id:String,
@@ -14,6 +13,6 @@ data class Song(
     val explicitness:Boolean,
     @SerializedName("available_territories")
     val availableTerritories:List<String>,
-    val album:Album
+    val album:Album? = null
 
 )

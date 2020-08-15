@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#09CEF6</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimaryDark">#013B4F</color>
     <color name="colorAccent">#2E2E2E</color>
+    <color name="kkbox">#09CEF6</color>
+    <color name="kkbox_30">#4D09CEF6</color>
+    <color name="place_holder">#1058B2DC</color>
+    <color name="white">#FFFFFF</color>
 
 </resources>
