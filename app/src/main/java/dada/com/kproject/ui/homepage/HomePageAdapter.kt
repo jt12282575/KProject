@@ -19,6 +19,8 @@ import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_ITEM
 import dada.com.kproject.model.Album
 import dada.com.kproject.model.PlayList
 import dada.com.kproject.ui.HeaderViewHolder
+import kotlinx.android.synthetic.main.item_play_list.view.*
+import kotlinx.android.synthetic.main.item_song.view.*
 
 class HomePageAdapter(
     private val context: Context,
@@ -75,6 +77,11 @@ class HomePageAdapter(
                     onPlaylistClick.invoke(playlist)
                 }
                 holder.bind(playlist)
+                holder.itemView.ipl_tv_play_list_owner_and_date.setOnClickListener {
+                    holder.itemView.ipl_tv_play_list_owner_and_date.isSelected = true
+                    holder.itemView.ipl_tv_play_list_owner_and_date.marqueeRepeatLimit = 1
+                    holder.itemView.ipl_tv_play_list_owner_and_date.ellipsize = TextUtils.TruncateAt.MARQUEE
+                }
             }
         } else{
 

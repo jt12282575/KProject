@@ -44,7 +44,7 @@ class SonglistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             artist = album.artist.name
             imageUrl = album!!.images[0].url
         }
-
+        itemView.is_tv_artist_and_date.isSelected = false
         itemView.is_tv_artist_and_date.text = "$artist@${dateStr}"
 
 

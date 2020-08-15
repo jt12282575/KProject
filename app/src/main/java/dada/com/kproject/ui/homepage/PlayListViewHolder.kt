@@ -19,6 +19,7 @@ class PlayListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         val updateDate= sdfApiFormat.parse(playList.updatedAt)
         val dateStr = sdfShowFormat.format(updateDate)
+        itemView.ipl_tv_play_list_owner_and_date.isSelected = false
         itemView.ipl_tv_play_list_owner_and_date.text = "${playList.owner.name}@${dateStr}"
         val imageSize:Int = itemView.context.resources.getDimension(R.dimen.thumb_image_size).roundToInt()
         Picasso.get()
