@@ -17,11 +17,13 @@ import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_HEADER
 import dada.com.kproject.const.ViewStateConst.Companion.PLAY_LIST_ITEM
 import dada.com.kproject.model.Category
 import dada.com.kproject.model.PlayList
+import dada.com.kproject.ui.HeaderViewHolder
 
 class HomePageAdapter(
     private val context: Context,
     private val categories:List<Category>,
-    private val onCategoryClick:(category:Category)->Unit
+    private val onCategoryClick:(category:Category)->Unit,
+    private val onPlaylistClick:(playlist:PlayList)->Unit
 ): PagingDataAdapter<PlayList, RecyclerView.ViewHolder>(PLAY_LIST_COMPARATOR) {
 
 
@@ -67,8 +69,11 @@ class HomePageAdapter(
             holder.bind(categories,onCategoryClick)
         }else if(holder is PlayListViewHolder){
             val playList =getItem(mapPlayListPosition(position))
-            playList?.let {
-                holder.bind(it)
+            playList?.let {playlist ->
+                holder.itemView.setOnClickListener {
+                    onPlaylistClick.invoke(playlist)
+                }
+                holder.bind(playlist)
             }
         } else{
 

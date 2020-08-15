@@ -1,4 +1,4 @@
-package dada.com.kproject.ui.homepage
+package dada.com.kproject.ui
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

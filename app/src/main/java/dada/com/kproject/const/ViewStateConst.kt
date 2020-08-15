@@ -2,7 +2,7 @@ package dada.com.kproject.const
 
 class ViewStateConst {
     companion object {
-        // homepage recyclerView size
+        // homepage recyclerView item size
         const val HOMEPAGE_CATEGORY_HEADER_SIZE = 1
         const val HOMEPAGE_PLAY_LIST_HEADER_SIZE = 1
         const val HOMEPAGE_CATEGORY_LIST_VERTICAL_SIZE = 1
@@ -16,6 +16,13 @@ class ViewStateConst {
         const val CATEGORY_LIST_HEADER_INDEX = 0
         const val CATEGORY_LIST_ITEM_INDEX = 1
         const val PLAY_LIST_HEADER_INDEX = 2
+
+        // songlist recyclerView item size
+        const val SONGLIST_HEADER_SIZE = 1
+
+        // songlist recyclerView item type
+        const val SONGLIST_HEADER = 0
+        const val SONGLIST_ITEM = 1
 
 
         const val NO_ITEM = -1

@@ -9,6 +9,7 @@ class DateUtil {
 
         fun getApiDateFormat() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ", Locale.TAIWAN)
         fun getShowDateFormat() = SimpleDateFormat("yyyy/MM/dd")
+        fun getAlbumDateFormat() = SimpleDateFormat("yyyy-MM-dd")
 
 
     }

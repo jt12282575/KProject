@@ -19,8 +19,11 @@ class ApiConst {
         const val PLAY_LIST_PER_PAGE = 10
 
         //Api type
+        const val SOMETHING_WRONG = -1
         const val NEW_RELEASE_CATEGORIES = 0
         const val PLAY_LIST = 1
+        const val NEW_RELEASE_CATEGORIES_TRACKS = 2
+        const val PLAY_LIST_TRACKS = 3
 
         //Paging
         const val PAGING_PAGE_SIZE = 10

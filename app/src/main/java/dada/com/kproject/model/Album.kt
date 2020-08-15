@@ -1,6 +1,7 @@
 package dada.com.kproject.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Album(
     val id:String,
@@ -13,4 +14,4 @@ data class Album(
     val releaseData:String,
     val images:List<Image>,
     val artist:Artist
-)
+): Serializable

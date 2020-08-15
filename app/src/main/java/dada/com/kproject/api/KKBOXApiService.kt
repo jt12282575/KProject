@@ -59,7 +59,7 @@ interface KKBOXService {
         @Query("territory") territory:String = TerritoryEnum.TAIWAN.countryCode
     ):Response<Tracks>
 
-    @GET("/albums/{album_id}/tracks")
+    @GET("albums/{album_id}/tracks")
     suspend fun fetchSonglistInAlbum(
         @Header("Authorization") token: String,
         @Path("album_id") albumId:String,

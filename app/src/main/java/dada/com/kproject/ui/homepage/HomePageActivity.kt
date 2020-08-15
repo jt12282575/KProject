@@ -1,6 +1,7 @@
 package dada.com.kproject.ui.homepage
 
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -10,7 +11,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dada.com.kproject.R
+import dada.com.kproject.const.ApiConst.Companion.NEW_RELEASE_CATEGORIES_TRACKS
+import dada.com.kproject.const.ApiConst.Companion.PLAY_LIST_TRACKS
+import dada.com.kproject.const.BundleKey.Companion.ARG_ID
+import dada.com.kproject.const.BundleKey.Companion.ARG_IMAGE
+import dada.com.kproject.const.BundleKey.Companion.ARG_RELEASE_DATE
+import dada.com.kproject.const.BundleKey.Companion.ARG_TYPE
 import dada.com.kproject.model.Category
+import dada.com.kproject.ui.songlist.SonglistActivity
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.needToRefreshToken
 import kotlinx.android.synthetic.main.activity_homepage.*
@@ -23,13 +31,31 @@ import kotlinx.coroutines.flow.collect
 class HomePageActivity : AppCompatActivity() {
 
     private var errorState: LoadState.Error? = null
-    val model:HomePageViewModel by viewModels { HomePageVMFactory }
+    val model: HomePageViewModel by viewModels { HomePageVMFactory }
     private val categories = mutableListOf<Category>()
     private val homePageAdapter by lazy {
-        HomePageAdapter(applicationContext,categories){
-
-        }
+        val intent = Intent(this, SonglistActivity::class.java)
+        HomePageAdapter(applicationContext, categories,
+            onCategoryClick = {
+                intent.apply {
+                    putExtra(ARG_ID, it.id)
+                    putExtra(ARG_TYPE, NEW_RELEASE_CATEGORIES_TRACKS)
+                    putExtra(ARG_IMAGE, it.images[1].url)
+                    putExtra(ARG_RELEASE_DATE,it.releaseDate)
+                }
+                startActivity(intent)
+            },
+            onPlaylistClick = {
+                intent.apply {
+                    putExtra(ARG_ID, it.id)
+                    putExtra(ARG_TYPE, PLAY_LIST_TRACKS)
+                    putExtra(ARG_IMAGE, it.images[1].url)
+                }
+                startActivity(intent)
+            }
+        )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
@@ -37,10 +63,10 @@ class HomePageActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(applicationContext)
 
             adapter = homePageAdapter.withLoadStateHeaderAndFooter(
-                header = PlayListStateAdapter{
+                header = PlayListStateAdapter {
                     homePageAdapter.retry()
                 },
-                footer = PlayListStateAdapter{
+                footer = PlayListStateAdapter {
                     homePageAdapter.retry()
                 }
             )
@@ -57,12 +83,11 @@ class HomePageActivity : AppCompatActivity() {
             ah_retry_button.isVisible = loadState.source.refresh is LoadState.Error
             errorState = loadState.source.append as? LoadState.Error
                 ?: loadState.source.prepend as? LoadState.Error
-                ?: loadState.append as? LoadState.Error
-                ?: loadState.prepend as? LoadState.Error
-                ?: loadState.refresh as? LoadState.Error
+                        ?: loadState.append as? LoadState.Error
+                        ?: loadState.prepend as? LoadState.Error
+                        ?: loadState.refresh as? LoadState.Error
             errorState?.let {
-                if (needToRefreshToken(it.error)){
-                    logi("error notify refresh token")
+                if (needToRefreshToken(it.error)) {
                     model.refreshToken()
                 }
             }
@@ -86,13 +111,12 @@ class HomePageActivity : AppCompatActivity() {
 
 
         model.fetchTenNewReleaseCategories().observe(this, Observer {
-            if (it.data != null && it.data.data.isNotEmpty()){
+            if (it.data != null && it.data.data.isNotEmpty()) {
                 categories.clear()
                 categories.addAll(it.data.data)
                 homePageAdapter.notifyDataSetChanged()
             }
-            logi("size : ${it.data?.data?.size}")
-            if(it?.message != null){
+            if (it?.message != null) {
                 logi("error : ${it?.message}")
             }
         })
@@ -101,13 +125,13 @@ class HomePageActivity : AppCompatActivity() {
 
 
         model.isTokenRefreshed().observe(this, Observer {
-           errorState?.let {
-               logi("token refreshed :${it.error.message}")
-               if (needToRefreshToken(it.error)){
-                   logi("paging refresh :${it.error?.message}")
-                   homePageAdapter.retry()
-               }
-           }
+            errorState?.let {
+                logi("token refreshed :${it.error.message}")
+                if (needToRefreshToken(it.error)) {
+                    logi("paging refresh :${it.error?.message}")
+                    homePageAdapter.retry()
+                }
+            }
         })
 
 
@@ -120,9 +144,9 @@ class HomePageActivity : AppCompatActivity() {
         model.loadTenCategories()
     }
 
-    private fun loadPlayList(){
+    private fun loadPlayList() {
         lifecycleScope.launch {
-            model.loadPlayList().collectLatest{
+            model.loadPlayList().collectLatest {
                 homePageAdapter.submitData(it)
             }
         }

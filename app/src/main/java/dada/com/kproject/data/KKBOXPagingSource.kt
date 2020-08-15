@@ -45,9 +45,6 @@ class KKBOXPagingSource(
             if (thrownAuthExceptionFlag){
                 thrownAuthExceptionFlag = false
             }
-            response.body()?.data?.forEach {
-                logi("id: ${it.id}")
-            }
             val playLists = response.body()?.data?: mutableListOf()
             LoadResult.Page(
                 data = playLists,

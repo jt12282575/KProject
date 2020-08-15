@@ -32,9 +32,7 @@ open class BaseViewModel(private  val repo:BaseRepository):ViewModel() {
     get() = _apiWrapperData
 
     protected var token: String = (repo.getLocalToken() ?: "").also {
-        logi("local token : $it")
         if (it.isEmpty()) {
-            logi("token is Empty")
             _needFetchToken.value = true
         }
     }
@@ -77,12 +75,10 @@ open class BaseViewModel(private  val repo:BaseRepository):ViewModel() {
     fun fetchToken() = Transformations.switchMap(_needFetchToken) {
 
         launchDataLoad {
-            logi("start fetch token")
             repo.fetchRemoteToken()
         }
     }.map {
         viewModelScope.launch(Dispatchers.IO) {
-            logi("work in storage token")
             if (it.data != null) {
                 token = "${it.data.tokenType} ${it.data.accessToken}"
                 repo.saveToken(token)

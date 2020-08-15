@@ -10,11 +10,7 @@ import dada.com.kproject.const.ApiConst
 import dada.com.kproject.const.ApiConst.Companion.CATEGORY_COMPLEX
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.local.SharedPreferencesProvider
-import dada.com.kproject.model.CategoryResponse
-import dada.com.kproject.model.PlayList
-import dada.com.kproject.model.PlayListResponse
-import dada.com.kproject.model.TokenResponse
-import dada.com.kproject.util.logi
+import dada.com.kproject.model.*
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
@@ -63,9 +59,7 @@ class KKBOXRepository(private val service: KKBOXService,
     }
 
     override fun getLocalToken(): String? {
-        val tokenStr =  sharedPreferencesProvider.getToken()
-        logi("fetch from local $tokenStr")
-        return tokenStr
+        return sharedPreferencesProvider.getToken()
     }
 
     fun fetchPlayListStream(token:String): Flow<PagingData<PlayList>> {
@@ -77,6 +71,20 @@ class KKBOXRepository(private val service: KKBOXService,
                 enablePlaceholders = false),
             pagingSourceFactory ={pagingSource!!}
         ).flow
+    }
+
+    suspend fun fetchAlbumTracks(albumId:String, token:String): Response<Tracks>{
+        return service.fetchSonglistInAlbum(
+            token = token,
+            albumId = albumId
+        )
+    }
+
+    suspend fun fetchPlaylistTracks(playlistId:String, token:String): Response<Tracks>{
+        return service.fetchSonglistInPlaylist(
+            token = token,
+            playlistId = playlistId
+        )
     }
 
 }
