@@ -26,7 +26,7 @@ class ApiConst {
         const val PLAY_LIST_TRACKS = 3
 
         //Paging
-        const val PAGING_PAGE_SIZE = 5
+        const val PAGING_PAGE_SIZE = 10
         const val PAGING_INITIAL_OFFSET = 0
 
 

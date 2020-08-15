@@ -33,14 +33,6 @@ class KKBOXRepository(private val service: KKBOXService,
 
 
 
-   suspend fun fetchPlayList(limit: Int, offset:Int, token:String):Response<PlayListResponse>{
-       return service.fetchPlaylist(
-           token = token,
-           limit = limit,
-           offset = offset
-       )
-   }
-
     override suspend fun fetchRemoteToken(): TokenResponse {
         return tokenService.getAccessToken(
             grantType = ApiConst.CLIENT_CREDENTIALS,
@@ -88,3 +80,4 @@ class KKBOXRepository(private val service: KKBOXService,
     }
 
 }
+
