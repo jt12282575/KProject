@@ -58,7 +58,9 @@ class SonglistAdapter(
                 holder.bind(holder.itemView.context.getString(R.string.songlist_header))
             }
             is SonglistViewHolder-> {
-
+                holder.itemView.setOnClickListener {
+                    songOnClick.invoke(songlist[mapSonglistPosition(position)])
+                }
                 holder.bind(songlist[mapSonglistPosition(position)],album)
                 holder.itemView.is_tv_artist_and_date.setOnClickListener {
                     holder.itemView.is_tv_artist_and_date.isSelected = true

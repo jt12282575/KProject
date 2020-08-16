@@ -1,5 +1,6 @@
 package dada.com.kproject.ui.songlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.activity.viewModels
@@ -15,8 +16,10 @@ import dada.com.kproject.const.BundleKey.Companion.ARG_ALBUM
 import dada.com.kproject.const.BundleKey.Companion.ARG_ID
 import dada.com.kproject.const.BundleKey.Companion.ARG_IMAGE
 import dada.com.kproject.const.BundleKey.Companion.ARG_TYPE
+import dada.com.kproject.const.BundleKey.Companion.ARG_URL
 import dada.com.kproject.model.Album
 import dada.com.kproject.model.Song
+import dada.com.kproject.ui.song.SongPageActivity
 import dada.com.kproject.util.logi
 import dada.com.kproject.util.wrapper.Status
 import kotlinx.android.synthetic.main.activity_songlist.*
@@ -27,12 +30,13 @@ class SonglistActivity : AppCompatActivity() {
     private var id = ""
     private var type = SOMETHING_WRONG
     private var imageUrl = ""
-    private var releaseDate = ""
     private val songlist = mutableListOf<Song>()
     private var album: Album? = null
     private val songlistAdapter  by lazy {
         SonglistAdapter(songlist,album){
-
+            val intent = Intent(this,SongPageActivity::class.java)
+            intent.putExtra(ARG_URL,it.url)
+            startActivity(intent)
         }
     }
 

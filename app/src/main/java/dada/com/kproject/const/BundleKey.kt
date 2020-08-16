@@ -7,5 +7,6 @@ class BundleKey {
         const val ARG_TYPE = "arg_type"
         const val ARG_RELEASE_DATE = "arg_release_date"
         const val ARG_ALBUM = "arg_album"
+        const val ARG_URL = "arg_url"
     }
 }
