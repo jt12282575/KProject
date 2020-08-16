@@ -1,0 +1,12 @@
+{
+    "data": [],
+    "paging": {
+        "offset": 30,
+        "limit": 10,
+        "previous": "https://api.kkbox.com/v1.1/featured-playlists?limit=10&offset=20&territory=TW",
+        "next": null
+    },
+    "summary": {
+        "total": 30
+    }
+}

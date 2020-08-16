@@ -108,7 +108,7 @@ class HomePageActivity : AppCompatActivity() {
         }
 
         model.fetchToken().observe(this, Observer {
-            logi("finish fetch")
+
         })
 
 
@@ -117,9 +117,6 @@ class HomePageActivity : AppCompatActivity() {
                 categories.clear()
                 categories.addAll(it.data.data)
                 homePageAdapter.notifyDataSetChanged()
-            }
-            if (it?.message != null) {
-                logi("error : ${it?.message}")
             }
         })
 

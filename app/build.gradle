@@ -18,9 +18,28 @@ android {
         def STRING = "String"
         buildConfigField STRING, "KKBOX_ID", '"869c124ec341846563bb608f8e0bcc12"'
         buildConfigField STRING, "KKBOX_SECRET", '"3420158d290f713dff39c8b75de39042"'
+        buildConfigField "boolean", "USE_FAKE_PLAYLIST", "true"
+
+    }
+
+    productFlavors{
+
+        fakedata{
+            applicationId "dada.com.kproject"
+            flavorDimensions "100"
+            buildConfigField "boolean", "USE_FAKE_PLAYLIST", "true"
+        }
+        api{
+            applicationId "dada.com.kproject.realdata"
+            flavorDimensions "100"
+            buildConfigField "boolean", "USE_FAKE_PLAYLIST", "false"
+        }
+
     }
 
     buildTypes {
+
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
