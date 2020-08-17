@@ -3,8 +3,7 @@ package dada.com.kproject.ui
 import androidx.lifecycle.*
 import dada.com.kproject.Global
 import dada.com.kproject.R
-import dada.com.kproject.data.BaseRepository
-import dada.com.kproject.util.logi
+import dada.com.kproject.data.IRepository
 import dada.com.kproject.util.wrapper.ApiWrapper
 import dada.com.kproject.util.wrapper.Resource
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.util.*
 
-open class BaseViewModel(private  val repo:BaseRepository):ViewModel() {
+open class BaseViewModel(private  val repo:IRepository):ViewModel() {
     protected val _needFetchToken = MutableLiveData<Boolean>()
 
     protected val apiQueue: Queue<ApiWrapper> = LinkedList()

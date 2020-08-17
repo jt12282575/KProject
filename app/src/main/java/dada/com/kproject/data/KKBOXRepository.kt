@@ -8,6 +8,8 @@ import dada.com.kproject.api.KKBOXService
 import dada.com.kproject.api.KKBOXTokenService
 import dada.com.kproject.const.ApiConst
 import dada.com.kproject.const.ApiConst.Companion.CATEGORY_COMPLEX
+import dada.com.kproject.const.ApiConst.Companion.PAGING_PAGE_SIZE
+import dada.com.kproject.const.ApiConst.Companion.PREFETCH_DISTANCE_SIZE
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.local.SharedPreferencesProvider
 import dada.com.kproject.model.*
@@ -17,7 +19,7 @@ import retrofit2.Response
 class KKBOXRepository(private val service: KKBOXService,
                       private val tokenService: KKBOXTokenService,
                       private val sharedPreferencesProvider: SharedPreferencesProvider
-):BaseRepository
+):IRepository
 {
 
 
@@ -59,7 +61,8 @@ class KKBOXRepository(private val service: KKBOXService,
 
         return Pager(
             config = PagingConfig(
-                pageSize = ApiConst.PAGING_PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE_SIZE,
+                pageSize = PAGING_PAGE_SIZE,
                 enablePlaceholders = false),
             pagingSourceFactory ={pagingSource!!}
         ).flow
