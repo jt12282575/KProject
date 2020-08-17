@@ -2,14 +2,12 @@ package dada.com.kproject.api
 
 import android.net.Uri
 import android.text.TextUtils
-import com.kkbox.openapideveloper.BuildConfig
 import dada.com.kproject.Global
 import dada.com.kproject.R
 import dada.com.kproject.const.TerritoryEnum
 import dada.com.kproject.model.CategoryResponse
 import dada.com.kproject.model.PlayListResponse
 import dada.com.kproject.model.Tracks
-import dada.com.kproject.util.logi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -26,7 +24,6 @@ private val service: KKBOXService by lazy {
     val interceptor = MockInterceptor().also {
         it.setInterceptorListener(object : MockInterceptor.MockInterceptorListener {
             override fun setAPIResponse(url: String): MockAPIResponse? {
-                logi("url: $url")
                 val uri = Uri.parse(url)
                 val offset = uri.getQueryParameter("offset")
                 val path = uri.path
@@ -61,11 +58,6 @@ private val service: KKBOXService by lazy {
     }
 
     var useFakePlaylist = dada.com.kproject.BuildConfig.USE_FAKE_PLAYLIST
-    if (useFakePlaylist){
-        logi("use fake")
-    }else{
-        logi("use real")
-    }
     var okHttpClientBuilder = OkHttpClient.Builder()
         .addInterceptor(logger)
     if (useFakePlaylist){

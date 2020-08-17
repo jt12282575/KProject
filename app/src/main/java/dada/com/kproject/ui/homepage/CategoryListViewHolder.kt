@@ -1,7 +1,6 @@
 package dada.com.kproject.ui.homepage
 
 import android.view.View
-import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dada.com.kproject.R

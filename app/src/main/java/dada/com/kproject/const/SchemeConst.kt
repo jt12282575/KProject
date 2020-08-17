@@ -2,7 +2,7 @@ package dada.com.kproject.const
 
 class SchemeConst {
     companion object{
-        val HTTPS_SCHEME = "https"
-        val KKBOX_SCHEME = "kkbox"
+        const val HTTPS_SCHEME = "https"
+        const val KKBOX_SCHEME = "kkbox"
     }
 }

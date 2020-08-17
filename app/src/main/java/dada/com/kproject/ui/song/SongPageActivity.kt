@@ -19,9 +19,6 @@ import dada.com.kproject.const.SchemeConst.Companion.HTTPS_SCHEME
 import dada.com.kproject.const.SchemeConst.Companion.KKBOX_SCHEME
 import dada.com.kproject.util.SchemeUtil.Companion.getMarketDetailHttpsUrl
 import dada.com.kproject.util.SchemeUtil.Companion.getMarketDetailUri
-import dada.com.kproject.util.SchemeUtil.Companion.getMarketSearchHttpsUrl
-import dada.com.kproject.util.SchemeUtil.Companion.getMarketSearchUri
-import dada.com.kproject.util.logi
 import kotlinx.android.synthetic.main.activity_song_page.*
 
 
@@ -120,14 +117,14 @@ class SongPageActivity : AppCompatActivity() {
 
                     this@SongPageActivity.startActivity(intent)
                 } catch (e: Exception) {
-                    launchInPlayStore(request!!.url!!.scheme!!)
+                    launchInPlayStore()
                 }
             }
 
         }
     }
 
-    private fun launchInPlayStore(scheme: String) {
+    private fun launchInPlayStore() {
         try {
             startActivity(
                 Intent(

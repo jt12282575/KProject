@@ -32,7 +32,6 @@ class SonglistViewModel(
 
             when (apiWrapper.apiType) {
                 NEW_RELEASE_CATEGORIES_TRACKS -> {
-                    logi("category")
                     launchApi(apiWrapper) { token ->
                         repo.fetchAlbumTracks(
                             albumId = apiWrapper.id,

@@ -125,9 +125,7 @@ class HomePageActivity : AppCompatActivity() {
 
         model.isTokenRefreshed().observe(this, Observer {
             errorState?.let {
-                logi("token refreshed :${it.error.message}")
                 if (needToRefreshToken(it.error)) {
-                    logi("paging refresh :${it.error?.message}")
                     homePageAdapter.retry()
                 }
             }
