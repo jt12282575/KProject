@@ -29,6 +29,9 @@ class ApiConst {
         const val PAGING_PAGE_SIZE = 10
         const val PAGING_INITIAL_OFFSET = 0
 
+        //KKBOX
+        const val KKBOX_PACKAGE_NAME = "com.skysoft.kkbox.android"
+
 
 
     }
