@@ -44,7 +44,7 @@
         <TextView
             android:id="@+id/is_tv_artist_and_date"
             android:textSize="14dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/sub_text"
             android:layout_marginLeft="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
